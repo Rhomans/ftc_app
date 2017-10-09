@@ -17,10 +17,6 @@ public class DriveController {
     public DcMotor driveRightFront;
     public DcMotor driveRightBack;
 
-    /**
-     * idk wtf this is supposed to signify, but is probably some unfinished thing
-    ///// MOTOR ENCODER VALUES /////
-    */
     public DriveController(HardwareMap hMap, LinearOpMode linearOpMode) {
 
         HardwareMap hardwareMap = hMap;
@@ -31,62 +27,43 @@ public class DriveController {
         driveRightFront = hardwareMap.get(DcMotor.class, "drive_right_front");
         driveRightBack = hardwareMap.get(DcMotor.class, "drive_right_back");
 
-        /**
-         //reverse the motors that need to be reversed
-         driveLeftFront.setDirection(DcMotor.Direction.???);
-         driveLeftBack.setDirection(DcMotor.Direction.???);
-         driveRightFront.setDirection(DcMotor.Direction.???);
-         driveRightBack.setDirection(DcMotor.Direction.???);
-         */
-
-        /**
-         * this block needs to be confirmed
-        motorRightB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLeftB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorRightB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLeftB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRightF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeftF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        */
-
     }
-            //Fuck, everything past here needs to be checked
+           
     public void initEncoders() {
-        motorRightB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLeftB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveRightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveLeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorRightB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLeftB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveRightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveLeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorRightF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeftF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorRightF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorLeftF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public void setPower(double power) {
-        motorRightF.setPower(power);
-        motorRightB.setPower(power);
-        motorLeftF.setPower(power);
-        motorLeftB.setPower(power);
+        driveRightFront.setPower(power);
+        driveRightBack.setPower(power);
+        driveLeftFront.setPower(power);
+        driveLeftBack.setPower(power);
     }
 
     public void setPowerEncoderMotors(double power) {
-        motorRightF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorLeftF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorRightF.setPower(0);
-        motorLeftF.setPower(0);
-        motorRightB.setPower(power);
-        motorLeftB.setPower(power);
+        driveRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveRightFront.setPower(0);
+        driveLeftFront.setPower(0);
+        driveRightBack.setPower(power);
+        driveLeftBack.setPower(power);
     }
 
     public void setBothPowers(double l, double r) {
-        motorRightF.setPower(r);
-        motorRightB.setPower(r);
-        motorLeftF.setPower(l);
-        motorLeftB.setPower(l);
+        driveRightFront.setPower(r);
+        driveRightBack.setPower(r);
+        driveLeftFront.setPower(l);
+        driveLeftBack.setPower(l);
     }
 
     public void turnGyro(double degres, Telemetry telemetry, int speed/* speed is between 1 and 5 inclusive*/ ){
@@ -101,22 +78,22 @@ public class DriveController {
 
         double ticks = cm / cmPerTick;
 
-        motorRightB.setTargetPosition((int)ticks);
-        motorLeftB.setTargetPosition((int)ticks);
+        driveRightBack.setTargetPosition((int)ticks);
+        driveLeftBack.setTargetPosition((int)ticks);
 
         // Turn On RUN_TO_POSITION
-        motorLeftB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRightB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        driveLeftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        driveRightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorLeftB.setPower(lpower);
-        motorLeftF.setPower(0);
-        motorRightB.setPower(rpower);
-        motorRightF.setPower(0);
+        driveLeftBack.setPower(lpower);
+        driveLeftFront.setPower(0);
+        driveRightBack.setPower(rpower);
+        driveRightFront.setPower(0);
 
-        while((linearOpMode == null || linearOpMode.opModeIsActive()) && Math.abs(motorLeftB.getCurrentPosition()) < ticks) { //(changed 11/3)
+        while((linearOpMode == null || linearOpMode.opModeIsActive()) && Math.abs(driveLeftBack.getCurrentPosition()) < ticks) { //(changed 11/3)
             // WAIT
-            telemetry.addData("Right ", motorRightB.getCurrentPosition());
-            telemetry.addData("Left ", motorLeftB.getCurrentPosition());
+            telemetry.addData("Right ", driveRightBack.getCurrentPosition());
+            telemetry.addData("Left ", driveLeftBack.getCurrentPosition());
             telemetry.addData("cm", cm);
             telemetry.addData("Target Ticks: ", ticks);
             telemetry.update();
@@ -126,16 +103,16 @@ public class DriveController {
         }
 
         if (coast) {
-            motorLeftF.setPower(0);
-            motorRightF.setPower(0);
+            driveLeftFront.setPower(0);
+            driveRightFront.setPower(0);
             Thread.sleep(1000);
         }
         setPower(0);
 
-        motorRightF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeftF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRightB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeftB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveLeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }*/
 

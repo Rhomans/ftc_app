@@ -65,10 +65,10 @@ public class TeleOp extends OpMode {
 
         // MOTORS
 
-        driveController.motorRightF.setPower(game1StickX * 0.4);
-        driveController.motorRightB.setPower(game1StickX * 0.4);
-        driveController.motorLeftF.setPower(game1StickY * 0.4);
-        driveController.motorLeftB.setPower(game1StickY * 0.4);
+        driveController.driveRightFront.setPower(game1StickX * 0.4);
+        driveController.driveRightBack.setPower(game1StickX * 0.4);
+        driveController.driveLeftFront.setPower(game1StickY * 0.4);
+        driveController.driveLeftBack.setPower(game1StickY * 0.4);
 
     }
 
