@@ -17,6 +17,7 @@ public class DriveController {
     public DcMotor driveRightFront;
     public DcMotor driveRightBack;
 
+
     /**
     cmPerTick = ???
 
@@ -32,6 +33,7 @@ public class DriveController {
     ///// MOTOR ENCODER VALUES /////
            ^     ^    ^   ^
     */
+
     public DriveController(HardwareMap hMap, LinearOpMode linearOpMode) {
 
         HardwareMap hardwareMap = hMap;
@@ -41,6 +43,7 @@ public class DriveController {
         driveLeftBack = hardwareMap.get(DcMotor.class, "drive_left_back");
         driveRightFront = hardwareMap.get(DcMotor.class, "drive_right_front");
         driveRightBack = hardwareMap.get(DcMotor.class, "drive_right_back");
+
 
         /**
          //reverse the motors that need to be reversed
@@ -87,7 +90,30 @@ public class DriveController {
         driveLeftBack.setPower(power);
     }
 
-    public void setDrivePowerLR(double l, double r) {
+           
+    public void initEncoders() {
+        driveRightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveLeftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        driveRightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveLeftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        driveRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        driveRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    public void setPower(double power) {
+        driveRightFront.setPower(power);
+        driveRightBack.setPower(power);
+        driveLeftFront.setPower(power);
+        driveLeftBack.setPower(power);
+    }
+
+    public void setDrivePowerLR(double l,
+                              double r) {
         driveRightFront.setPower(r);
         driveRightBack.setPower(r);
         driveLeftFront.setPower(l);
@@ -132,6 +158,13 @@ public class DriveController {
 
         while((linearOpMode == null || linearOpMode.opModeIsActive())
                 && Math.abs(driveLeftBack.getCurrentPosition()) < ticks) {
+        driveLeftBack.setPower(lpower);
+        driveLeftFront.setPower(0);
+        driveRightBack.setPower(rpower);
+        driveRightFront.setPower(0);
+
+        while((linearOpMode == null || linearOpMode.opModeIsActive()) && Math.abs(driveLeftBack.getCurrentPosition()) < ticks) {
+
             // WAIT
             telemetry.addData("Right ", driveRightBack.getCurrentPosition());
             telemetry.addData("Left ", driveLeftBack.getCurrentPosition());
