@@ -12,11 +12,15 @@ import com.qualcomm.robotcore.util.Range;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
 
-    DriveController driveController;
+    //DriveController driveController;
+    ColorController colorController;
+    MotorController motorController;
 
     @Override
     public void init() {
-        DriveController driveController = new DriveController(hardwareMap, null);
+        //driveController = new DriveController(hardwareMap, null);
+        colorController = new ColorController(hardwareMap, telemetry);
+        motorController = new MotorController(hardwareMap);
     }
 
     @Override
@@ -24,8 +28,8 @@ public class TeleOp extends OpMode {
 
         //GAMEPAD 1
 
-        float game1StickX = gamepad1.right_stick_y;
-        float game1StickY = gamepad1.left_stick_y;
+        float game1Stick1 = gamepad1.right_stick_y;
+        float game1Stick2 = gamepad1.left_stick_y;
         boolean game1A = gamepad1.a;
         boolean game1B = gamepad1.b;
         boolean game1X = gamepad1.x;
@@ -56,19 +60,17 @@ public class TeleOp extends OpMode {
         boolean game2Right = gamepad2.dpad_right;
         boolean game2Left = gamepad2.dpad_left;
 
-        game1StickX = Range.clip(game1StickX, -1, 1);
-        game1StickY = Range.clip(game1StickY, -1, 1);
+        game1Stick1 = Range.clip(game1Stick1, -1, 1);
+        game1Stick2 = Range.clip(game1Stick2, -1, 1);
 
         // scale the joystick value to make it easier to control at lower speeds
-        game1StickX = (float) scaleInput(-game1StickX);
-        game1StickY = (float) scaleInput(-game1StickY);
+        game1Stick1 = (float) scaleInput(game1Stick1);
+        game1Stick2 = (float) scaleInput(game1Stick2);
 
-        // MOTORS
 
-        driveController.driveRightFront.setPower(game1StickX * 0.4);
-        driveController.driveRightBack.setPower(game1StickX * 0.4);
-        driveController.driveLeftFront.setPower(game1StickY * 0.4);
-        driveController.driveLeftBack.setPower(game1StickY * 0.4);
+        colorController.printValues();
+        motorController.setPower(game1Stick1);
+        //driveController.setIndividualPower(game1Stick1, game1Stick2)
 
     }
 
