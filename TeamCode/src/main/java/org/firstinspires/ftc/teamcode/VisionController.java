@@ -31,8 +31,11 @@ public class VisionController{
     //this is important, but I don't know what is does
     //I think this is essentialy the thing that is used. whatever.
     VuforiaLocalizer vuforia;
+    public VisionController(HardwareMap hMap, boolean isFront, Telemetry telemetry){
 
-    public VisionController(HardwareMap hMap, boolean isFront){
+        //Debugging telemetry
+        telemetry.addData("Vision:", "Preparing...");
+        telemetry.update();
 
         //hardwareMap is used to get the camera
         HardwareMap hardwareMap = hMap;
@@ -58,6 +61,18 @@ public class VisionController{
 
         //sends all the parameters to the vuforia thing
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        //this tells vuforia what group of templates to look for,
+        // then which specific template it is looking for,
+        // then gives it a name
+        //NOTE: All 3 images for the 2017-2018 game are the same template, but have a different ID
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
+
+        //Debugging telemetry
+        telemetry.addData("Vision:", "Ready");
+        telemetry.update();
     }
 
 }
