@@ -13,8 +13,8 @@ public class MotorController {
 
     public DcMotor motor;
 
-    public MotorController(HardwareMap hardwareMap) {
-        motor = hardwareMap.get(DcMotor.class, "testMotor");
+    public MotorController(DcMotor inMotor) {
+        motor = inMotor;
     }
 
     public void setPower(double power) {
