@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -12,37 +13,38 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveController {
 
+    ///   HYPERPARAMETERS   ///
+
+    private double robotWidthIN = 17;
+    private double robotWidthCM = robotWidthIN * 2.54;
+
+    ///////////////////////////
+
     public MotorController driveLeftFront;
     public MotorController driveLeftBack;
     public MotorController driveRightFront;
     public MotorController driveRightBack;
 
-    private double cmPerTick = 100;
-
     public DriveController(HardwareMap hMap, LinearOpMode linearOpMode) {
 
         HardwareMap hardwareMap = hMap;
 
-        driveLeftFront  = new MotorController(hardwareMap.get(DcMotor.class, "drive_left_front"));
-        driveLeftBack = new MotorController(hardwareMap.get(DcMotor.class, "drive_left_back"));
-        driveRightFront = new MotorController(hardwareMap.get(DcMotor.class, "drive_right_front"));
-        driveRightBack = new MotorController(hardwareMap.get(DcMotor.class, "drive_right_back"));
+        driveLeftFront  = new MotorController(hardwareMap.get(DcMotor.class, "driveLeftFront"));
+        driveLeftBack = new MotorController(hardwareMap.get(DcMotor.class, "driveLeftBack"));
+        driveRightFront = new MotorController(hardwareMap.get(DcMotor.class, "driveRightFront"));
+        driveRightBack = new MotorController(hardwareMap.get(DcMotor.class, "driveRightBack"));
 
-        /**
-         //reverse the motors that need to be reversed
-         driveLeftFront.setDirection(DcMotor.Direction.???);
-         driveLeftBack.setDirection(DcMotor.Direction.???);
-         driveRightFront.setDirection(DcMotor.Direction.???);
-         driveRightBack.setDirection(DcMotor.Direction.???);
-         */
 
-         driveRightBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-         driveLeftBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveLeftFront.motor.setDirection(DcMotor.Direction.REVERSE);
+        driveLeftBack.motor.setDirection(DcMotor.Direction.REVERSE);
 
-         driveRightBack.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-         driveLeftBack.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-         driveRightFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         driveLeftFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveRightBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveLeftBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        driveRightBack.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveLeftBack.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveRightFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        driveLeftFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void initEncoders() {
@@ -70,34 +72,58 @@ public class DriveController {
         driveLeftBack.setPower(l);
     }
 
-    public void driveEncoders(double cm, double lpower, double rpower, Telemetry telemetry, LinearOpMode linearOpMode) throws InterruptedException{
+    public double getTicks(double cm) {
+        double ticks = cm;
+        return ticks;
+    }
 
-         initEncoders();
+    public void turnSingleWheel(String direction, double degrees, double power) {
+        initEncoders();
+        double distanceCM = (2 * robotWidthCM * Math.PI) * (degrees / 360);
+        double ticks = getTicks(distanceCM);
+        while(Math.abs(driveLeftBack.motor.getCurrentPosition()) < ticks) {
+            if(direction.equals("right")) {
+                setIndividualPower(power, 0);
+            }
+            if(direction.equals("left")) {
+                setIndividualPower(0, power);
+            }
+        }
+        setPower(0);
+    }
 
-         double ticks = cm / cmPerTick;
+    public void turnDoubleWheel(String direction, double degrees, double power) {
+        initEncoders();
+        double distanceCM = (robotWidthCM * Math.PI) * (degrees / 360);
+        double ticks = getTicks(distanceCM);
+        while(Math.abs(driveLeftBack.motor.getCurrentPosition()) < ticks) {
+            if(direction.equals("right")) {
+                setIndividualPower(power, -power);
+            }
+            if(direction.equals("left")) {
+                setIndividualPower(-power, power);
+            }
+        }
+    }
 
-         driveRightBack.motor.setTargetPosition((int)ticks);
-         driveLeftBack.motor.setTargetPosition((int)ticks);
-
-         driveLeftBack.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-         driveRightBack.motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-         setIndividualPower(lpower, rpower);
-
-         while((linearOpMode == null || linearOpMode.opModeIsActive()) && Math.abs(driveLeftBack.motor.getCurrentPosition()) < ticks) {
-             driveLeftBack.setPower(lpower);
-             driveLeftFront.setPower(0);
-             driveRightBack.setPower(rpower);
-             driveRightFront.setPower(0);
-         }
-
-         setPower(0);
-
-         driveRightFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         driveLeftFront.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         driveRightBack.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         driveLeftBack.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void turnCurve(String direction, double degrees, double power, double radiusCM) {
+        initEncoders();
+        double distance1CM = (2 * Math.PI * (radiusCM - robotWidthCM)) * (degrees / 360);
+        double distance2CM = (2 * Math.PI * robotWidthCM) * (degrees / 360);
+        double ticks1 = getTicks(distance1CM);
+        double ticks2 = getTicks(distance2CM);
 
     }
 
+    public void driveEncoders(double distanceCM, double power) throws InterruptedException{
+         initEncoders();
+         double ticks = getTicks(distanceCM);
+         while(Math.abs(driveLeftBack.motor.getCurrentPosition()) < ticks) {
+             driveLeftBack.setPower(power);
+             driveLeftFront.setPower(power);
+             driveRightBack.setPower(power);
+             driveRightFront.setPower(power);
+         }
+         setPower(0);
+    }
 }
