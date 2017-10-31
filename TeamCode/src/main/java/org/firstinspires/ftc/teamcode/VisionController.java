@@ -26,20 +26,26 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
-public class VisionController{
+public class VisionController {
 
     //this is important, but I don't know what is does
-    //I think this is essentialy the thing that is used. whatever.
+    //I think this is essential the thing that is used. whatever.
+    //also some vars and objects
     VuforiaLocalizer vuforia;
-    public VisionController(HardwareMap hMap, boolean isFront, Telemetry telemetry){
+    Telemetry telemetry;
+    RelicRecoveryVuMark vuMark;
 
+    //This is the constructor. Most of the setup goes on here
+    public VisionController(HardwareMap hMap, boolean isFront, Telemetry tele) {
+
+        //Initiates Telemetry
+        telemetry = tele;
         //Debugging telemetry
         telemetry.addData("Vision:", "Preparing...");
         telemetry.update();
 
         //hardwareMap is used to get the camera
         HardwareMap hardwareMap = hMap;
-
 
 
         //Gets the camera view, for veiwing on-screen, then sends it to be constructed. This is for testing, remove it later
@@ -53,9 +59,9 @@ public class VisionController{
         parameters.vuforiaLicenseKey = "AfNZZLv/////AAAAGYoP4N1VRUpbvn38AR+Y2mg+OK2xWQmTIUomrg9LD3edhWpUZicxdz5roqag6eAz0yAXzJOvot5ouljPTBbT9hCuRyszF+HW6YkiveEcwwcXgErjo4x8G516wjbmz5N+7jGCylTJo6DupJrv/U5iJqTFKVqSBWeFEr6q+uzJzwlYLZg4mwc0cnG2ik1oQifSRuB3INwZYpKyOM4WoYlD5SP9kp2u96LkVZSH+B0xT9p7VcoFO9rIv4+2LZ64F8OQcdF4jQjtFSZB9qf/nri0bowld6I80wMF5kf0KtV9H9oT+EDuZ1WPwqYi80k44Za2UU9o3Jd4DQkFjAsis0gyhIpCwdsyX6btWBk5vDZ4+6CZ";
 
         //for choosing the front or back camera.
-        if(isFront){
+        if (isFront) {
             parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        }else{
+        } else {
             parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         }
 
@@ -70,9 +76,61 @@ public class VisionController{
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate");
 
+        //Don't know what it does, but it is necessary
+        relicTrackables.activate();
+        vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
         //Debugging telemetry
         telemetry.addData("Vision:", "Ready");
         telemetry.update();
     }
+
+
+
+
+
+
+
+
+
+
+
+    public void temp() {
+        //Checks if it can see a template. Something other than UNKNOWN will be returned if it does.
+
+        //Sees the Mark
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            boolean markIdentified = false;
+
+            //tries to identify the mark
+            while (markIdentified != true) {
+
+                //tries to find out which Mark it is
+                if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    telemetry.addData("VuMark", "Identified: LEFT");
+                    markIdentified = true;
+                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    telemetry.addData("VuMark", "Identified: CENTER");
+                    markIdentified = true;
+                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    telemetry.addData("VuMark", "Identified: RIGHT");
+                    markIdentified = true;
+                } else {
+                    telemetry.addData("VuMark", "Unidentified");
+                    markIdentified = false;
+                }
+
+                //Pushes telemetry
+                telemetry.update();
+            }
+        }
+
+        //Can't see the Mark
+        else {
+            telemetry.addData("VuMark", "not visible");
+        }
+    }
+
+
 
 }
