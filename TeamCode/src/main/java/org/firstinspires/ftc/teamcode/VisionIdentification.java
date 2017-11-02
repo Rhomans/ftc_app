@@ -117,7 +117,6 @@ public class VisionIdentification extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
-        //////////THIS IS WHERE i AM AS FAR AS TRANSFER///////////////////
         relicTrackables.activate();
 
         while (opModeIsActive()) {
