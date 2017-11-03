@@ -23,7 +23,7 @@ public class BasicAuto extends LinearOpMode {
         waitForStart();
         runtimeAuto.reset();
 
-        MotorController motorController = new MotorController(hardwareMap.get(DcMotor.class, "testMotor"));
+        MotorController motorController = new MotorController(hardwareMap.get(DcMotor.class, "driveLeftFront"));
         motorController.setPower(1);
         Thread.sleep(10000);
     }

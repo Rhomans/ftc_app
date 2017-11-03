@@ -58,8 +58,10 @@ public class TeleOp extends OpMode {
         boolean game1Left = gamepad1.dpad_left;
 
         // Gamepad 2
-        float game2StickX = gamepad2.right_stick_y;
-        float game2StickY = gamepad2.left_stick_y;
+        float game2Stick1Y = gamepad2.left_stick_y;
+        float game2Stick1X = gamepad2.left_stick_x;
+        float game2Stick2Y = gamepad2.right_stick_y;
+        float game2Stick2X = gamepad2.right_stick_x;
         boolean game2A = gamepad2.a;
         boolean game2B = gamepad2.b;
         boolean game2X = gamepad2.x;
@@ -108,14 +110,34 @@ public class TeleOp extends OpMode {
 
         ///   Lift Controller   ///
 
-        if(game2Up) {
+        if(game2LT > 0.5) {
             liftController.setLiftPower(1);
         }
-        if(game2Down) {
+        else if(game2RT > 0.5) {
             liftController.setLiftPower(-1);
         }
-        if(!game2Up && !game2Down) {
+        else {
             liftController.setLiftPower(0);
+        }
+
+        if(game2Stick1Y > 0.5) {
+            liftController.inLowServos();
+        }
+        else if(game2Stick1Y < -0.5) {
+            liftController.outLowServos();
+        }
+        else {
+            liftController.stopLowServos();
+        }
+
+        if(game2Stick2Y > 0.5) {
+            liftController.inHighServos();
+        }
+        else if(game2Stick2Y < -0.5) {
+            liftController.outHighServos();
+        }
+        else {
+            liftController.stopHighServos();
         }
 
         telemetry.addData("Trigger", game2LT);
