@@ -19,6 +19,7 @@ public class TeleOp extends OpMode {
     ///////////////////////////
 
     private DriveController driveController;
+    private LiftController liftController;
 
     private boolean toggleSlow = false;
     private boolean justToggledSlow = false;
@@ -29,6 +30,7 @@ public class TeleOp extends OpMode {
     @Override
     public void init() {
         driveController = new DriveController(hardwareMap, null);
+        liftController = new LiftController(hardwareMap);
         //colorController = new ColorController(hardwareMap, telemetry);
     }
 
@@ -56,8 +58,10 @@ public class TeleOp extends OpMode {
         boolean game1Left = gamepad1.dpad_left;
 
         // Gamepad 2
-        float game2StickX = gamepad2.right_stick_y;
-        float game2StickY = gamepad2.left_stick_y;
+        float game2Stick1Y = gamepad2.left_stick_y;
+        float game2Stick1X = gamepad2.left_stick_x;
+        float game2Stick2Y = gamepad2.right_stick_y;
+        float game2Stick2X = gamepad2.right_stick_x;
         boolean game2A = gamepad2.a;
         boolean game2B = gamepad2.b;
         boolean game2X = gamepad2.x;
@@ -103,6 +107,40 @@ public class TeleOp extends OpMode {
         if(!game1A) {
             justToggledSlow = false;
         }
+
+        ///   Lift Controller   ///
+
+        if(game2LT > 0.5) {
+            liftController.setLiftPower(1);
+        }
+        else if(game2RT > 0.5) {
+            liftController.setLiftPower(-1);
+        }
+        else {
+            liftController.setLiftPower(0);
+        }
+
+        if(game2Stick1Y > 0.5) {
+            liftController.inLowServos();
+        }
+        else if(game2Stick1Y < -0.5) {
+            liftController.outLowServos();
+        }
+        else {
+            liftController.stopLowServos();
+        }
+
+        if(game2Stick2Y > 0.5) {
+            liftController.inHighServos();
+        }
+        else if(game2Stick2Y < -0.5) {
+            liftController.outHighServos();
+        }
+        else {
+            liftController.stopHighServos();
+        }
+
+        telemetry.addData("Trigger", game2LT);
 
         telemetry.update();
     }
