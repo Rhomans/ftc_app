@@ -25,7 +25,7 @@ public class VisionTestAuto extends LinearOpMode {
         telemetry.addData("Status", "Running temp");
         telemetry.update();
 
-        vision.temp(telemetry);
+        vision.temp2(telemetry);
 
         telemetry.addData("Status", "Temp run; waiting");
         telemetry.update();
@@ -39,7 +39,7 @@ public class VisionTestAuto extends LinearOpMode {
         telemetry.addData("Status", "Running temp");
         telemetry.update();
 
-        vision.temp(telemetry);
+        vision.temp2(telemetry);
         telemetry.addData("Status", "Done");
         telemetry.update();
 
