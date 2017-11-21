@@ -20,6 +20,4 @@ public class MotorController {
     public void setPower(double power) {
         motor.setPower(power);
     }
-
-
 }

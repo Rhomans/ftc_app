@@ -19,7 +19,7 @@ public class TeleOp extends OpMode {
     ///////////////////////////
 
     private DriveController driveController;
-    private LiftController liftController;
+    //private LiftController liftController;
 
     private boolean toggleSlow = false;
     private boolean justToggledSlow = false;
@@ -29,8 +29,8 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
-        driveController = new DriveController(hardwareMap, null);
-        liftController = new LiftController(hardwareMap);
+        driveController = new DriveController(hardwareMap, telemetry, null);
+        //liftController = new LiftController(hardwareMap);
         //colorController = new ColorController(hardwareMap, telemetry);
     }
 
@@ -82,8 +82,8 @@ public class TeleOp extends OpMode {
 
         ///   Drive Controller   ///
 
-        powerLeft = (float) scaleInput(game1Stick1Y);
-        powerRight = (float) scaleInput(game1Stick2Y);
+        powerLeft = (float) scaleInput(-game1Stick1Y);
+        powerRight = (float) scaleInput(-game1Stick2Y);
 
         if(toggleSlow) {
             powerLeft *= slowModeScalar;
@@ -110,7 +110,7 @@ public class TeleOp extends OpMode {
 
         ///   Lift Controller   ///
 
-        if(game2LT > 0.5) {
+        /*if(game2LT > 0.5) {
             liftController.setLiftPower(1);
         }
         else if(game2RT > 0.5) {
@@ -138,7 +138,7 @@ public class TeleOp extends OpMode {
         }
         else {
             liftController.stopHighServos();
-        }
+        }*/
 
         telemetry.addData("Trigger", game2LT);
 

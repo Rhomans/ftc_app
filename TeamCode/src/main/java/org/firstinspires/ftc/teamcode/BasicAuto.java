@@ -14,6 +14,12 @@ public class BasicAuto extends LinearOpMode {
 
     private ElapsedTime runtimeAuto = new ElapsedTime();
 
+    private DriveController driveController;
+
+    public void initialize() {
+        driveController = new DriveController(hardwareMap, telemetry, this);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
@@ -23,8 +29,8 @@ public class BasicAuto extends LinearOpMode {
         waitForStart();
         runtimeAuto.reset();
 
-        MotorController motorController = new MotorController(hardwareMap.get(DcMotor.class, "driveLeftFront"));
-        motorController.setPower(1);
-        Thread.sleep(10000);
+        initialize();
+        driveController.driveStraight(100, 0.5, "Straight 1");
+        driveController.turnDoubleWheel("right", 90, 0.5, "Right 1");
     }
 }

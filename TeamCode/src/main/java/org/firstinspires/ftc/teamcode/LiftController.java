@@ -31,12 +31,12 @@ public class LiftController {
 
     public void inLowServos() {
         leftLowServo.setPosition(1);
-        rightLowServo.setPosition(1);
+        rightLowServo.setPosition(0);
     }
 
     public void outLowServos() {
         leftLowServo.setPosition(0);
-        rightLowServo.setPosition(0);
+        rightLowServo.setPosition(1);
     }
 
     public void stopLowServos() {
@@ -45,12 +45,12 @@ public class LiftController {
     }
 
     public void inHighServos() {
-        leftHighServo.setPosition(1);
+        leftHighServo.setPosition(0);
         rightHighServo.setPosition(1);
     }
 
     public void outHighServos() {
-        leftHighServo.setPosition(0);
+        leftHighServo.setPosition(1);
         rightHighServo.setPosition(0);
     }
 
