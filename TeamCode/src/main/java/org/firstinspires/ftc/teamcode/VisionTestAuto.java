@@ -25,23 +25,11 @@ public class VisionTestAuto extends LinearOpMode {
         telemetry.addData("Status", "Running temp");
         telemetry.update();
 
-        vision.temp2(telemetry);
 
-        telemetry.addData("Status", "Temp run; waiting");
+
+        telemetry.addData("Status", "Temp run; Returned %s", vision.identifyVisionPattern(telemetry));
         telemetry.update();
 
-        try {
-            Thread.sleep(10000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-
-        telemetry.addData("Status", "Running temp");
-        telemetry.update();
-
-        vision.temp2(telemetry);
-        telemetry.addData("Status", "Done");
-        telemetry.update();
 
         try {
             Thread.sleep(10000);

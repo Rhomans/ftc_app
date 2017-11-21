@@ -1,8 +1,26 @@
 package org.firstinspires.ftc.teamcode;
 
-/**
- * Created by The Senate on 10/25/2017.
- */
+/******************************************
+ * Welcome, Visitor.                      *
+ *                                        *
+ * To use this class, create a Vision     *
+ * Controller object, and pass it a your  *
+ * hardwareMap, whether you want to use   *
+ * the front or back camera, and your     *
+ * telemetry; like so:                    *
+ *                                        *
+ *  VisionController vision               *
+ *    = new VisionController(hardwareMap, *
+ *    false,                              *
+ *    telemetry);                         *
+ *                                        *
+ * Above Code uses the back camera.       *
+ * Pass true if you want to use the front *
+ *                                        *
+ *   Good Luck,                           *
+ *                  Nico                  *
+ *                                        *
+******************************************/
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -34,6 +52,7 @@ public class VisionController {
     VuforiaLocalizer vuforia;
     RelicRecoveryVuMark vuMark;
     VuforiaTrackable relicTemplate;
+
     //This is the constructor. Most of the setup goes on here
     public VisionController(HardwareMap hMap, boolean isFront, Telemetry telemetry) {
 
@@ -82,56 +101,44 @@ public class VisionController {
         telemetry.update();
     }
 
-
-
-
-
-
-
-
-
-
-
-    public void temp2(Telemetry telemetry){
+    public int identifyVisionPattern(Telemetry telemetry) {
         //Checks if it can see a template. Something other than UNKNOWN will be returned if it does.
 
+        boolean markIdentified = false;
+        int markID = 0;
+        int tried = 0;
+
+        while (!markIdentified) {
+
+            tried = tried + 1;
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+            //tries to find out which Mark it is
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                telemetry.addData("VuMark", "Identified: LEFT");
+                markIdentified = true;
+                markID = 1;
+            } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                telemetry.addData("VuMark", "Identified: CENTER");
+                markIdentified = true;
+                markID = 2;
+
+            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                telemetry.addData("VuMark", "Identified: RIGHT");
+                markIdentified = true;
+                markID = 3;
+            } else {
+                telemetry.addData("VuMark", "Identifying: %s", tried);
+            }
+
+            telemetry.update();
 
 
-
-
-
-                /**
-                //tries to find out which Mark it is
-                if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    telemetry.addData("VuMark", "Identified: LEFT");
-                    markIdentified = true;
-                } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    telemetry.addData("VuMark", "Identified: CENTER");
-                    markIdentified = true;
-                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    telemetry.addData("VuMark", "Identified: RIGHT");
-                    markIdentified = true;
-                } else {
-                    telemetry.addData("VuMark", "Unidentified");
-                    markIdentified = false;
-                }
-                 */
-                boolean xusdgflaksh= true;
-                while(xusdgflaksh) {
-                    vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                    telemetry.addData("Vision:", " Identified %s ", vuMark);
-                    telemetry.update();
-                }
-                //Pushes telemetry
-
-
-        try {
-            Thread.sleep(10000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
         }
+        telemetry.addData("Vision:", " Identified %s ", vuMark);
+        telemetry.update();
+
+        return markID;
+
     }
-
-
-
 }
