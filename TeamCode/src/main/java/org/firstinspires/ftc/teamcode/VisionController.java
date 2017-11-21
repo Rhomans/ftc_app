@@ -101,7 +101,8 @@ public class VisionController {
         telemetry.update();
     }
 
-    public int identifyVisionPattern(Telemetry telemetry) {
+    public int identifyVisionPattern(Telemetry telemetry)
+    {
         //Checks if it can see a template. Something other than UNKNOWN will be returned if it does.
 
         boolean markIdentified = false;
