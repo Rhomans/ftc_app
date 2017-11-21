@@ -32,24 +32,21 @@ public class VisionController {
     //I think this is essential the thing that is used. whatever.
     //also some vars and objects
     VuforiaLocalizer vuforia;
-    Telemetry telemetry;
     RelicRecoveryVuMark vuMark;
-
+    VuforiaTrackable relicTemplate;
     //This is the constructor. Most of the setup goes on here
-    public VisionController(HardwareMap hMap, boolean isFront, Telemetry tele) {
+    public VisionController(HardwareMap hMap, boolean isFront, Telemetry telemetry) {
 
-        //Initiates Telemetry
-        telemetry = tele;
         //Debugging telemetry
         telemetry.addData("Vision:", "Preparing...");
         telemetry.update();
 
         //hardwareMap is used to get the camera
-        HardwareMap hardwareMap = hMap;
+        //HardwareMap hardwareMap = hMap;
 
 
         //Gets the camera view, for veiwing on-screen, then sends it to be constructed. This is for testing, remove it later
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // when we are sure everything works, replace the code bloc ^above^ this with v this v
@@ -73,8 +70,8 @@ public class VisionController {
         // then gives it a name
         //NOTE: All 3 images for the 2017-2018 game are the same template, but have a different ID
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate");
+        relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate2");
 
         //Don't know what it does, but it is necessary
         relicTrackables.activate();
@@ -95,16 +92,15 @@ public class VisionController {
 
 
 
-    public void temp() {
+    public void temp2(Telemetry telemetry){
         //Checks if it can see a template. Something other than UNKNOWN will be returned if it does.
 
-        //Sees the Mark
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            boolean markIdentified = false;
 
-            //tries to identify the mark
-            while (markIdentified != true) {
 
+
+
+
+                /**
                 //tries to find out which Mark it is
                 if (vuMark == RelicRecoveryVuMark.LEFT) {
                     telemetry.addData("VuMark", "Identified: LEFT");
@@ -119,15 +115,20 @@ public class VisionController {
                     telemetry.addData("VuMark", "Unidentified");
                     markIdentified = false;
                 }
-
+                 */
+                boolean xusdgflaksh= true;
+                while(xusdgflaksh) {
+                    vuMark = RelicRecoveryVuMark.from(relicTemplate);
+                    telemetry.addData("Vision:", " Identified %s ", vuMark);
+                    telemetry.update();
+                }
                 //Pushes telemetry
-                telemetry.update();
-            }
-        }
 
-        //Can't see the Mark
-        else {
-            telemetry.addData("VuMark", "not visible");
+
+        try {
+            Thread.sleep(10000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 
