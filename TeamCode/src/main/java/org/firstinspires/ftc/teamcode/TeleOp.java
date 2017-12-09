@@ -14,12 +14,15 @@ public class TeleOp extends OpMode {
 
     ///   Hyperparameters   ///
 
-    private double slowModeScalar = 0.08;
+    private double slowModeScalar = 0.15;
+    private double relicSpeed = 1;
+    private double liftSpeed = 1;
 
     ///////////////////////////
 
     private DriveController driveController;
-    //private LiftController liftController;
+    private LiftController liftController;
+    private RelicController relicController;
 
     private boolean toggleSlow = false;
     private boolean justToggledSlow = false;
@@ -30,8 +33,13 @@ public class TeleOp extends OpMode {
     @Override
     public void init() {
         driveController = new DriveController(hardwareMap, telemetry, null);
-        //liftController = new LiftController(hardwareMap);
+        liftController = new LiftController(hardwareMap);
+        relicController = new RelicController(hardwareMap);
         //colorController = new ColorController(hardwareMap, telemetry);
+
+        telemetry.addData("Slowmode:", "Off");
+        telemetry.addData("Lift:", "Off");
+        telemetry.addData("Relic:", "Off");
     }
 
     @Override
@@ -77,10 +85,10 @@ public class TeleOp extends OpMode {
 
         game1Stick1Y = Range.clip(game1Stick1Y, -1, 1);
         game1Stick2Y = Range.clip(game1Stick2Y, -1, 1);
-        game1Stick1X = Range.clip(game1Stick1X, -1, 1);
-        game1Stick2X = Range.clip(game1Stick2X, -1, 1);
+        game2Stick1X = Range.clip(game1Stick1X, -1, 1);
+        game2Stick2Y = Range.clip(game1Stick2X, -1, 1);
 
-        ///   Drive Controller   ///
+        ///   DRIVE CONTROLLER   ///
 
         powerLeft = (float) scaleInput(-game1Stick1Y);
         powerRight = (float) scaleInput(-game1Stick2Y);
@@ -90,8 +98,6 @@ public class TeleOp extends OpMode {
             powerRight *= slowModeScalar;
         }
 
-        telemetry.addData("L Power:", powerLeft);
-        telemetry.addData("R Power:", powerRight);
         driveController.setIndividualPower(powerLeft, powerRight);
 
         if(game1A && !justToggledSlow) {
@@ -108,39 +114,87 @@ public class TeleOp extends OpMode {
             justToggledSlow = false;
         }
 
-        ///   Lift Controller   ///
+        telemetry.addData("L Power:", powerLeft);
+        telemetry.addData("R Power:", powerRight);
 
-        /*if(game2LT > 0.5) {
-            liftController.setLiftPower(1);
+        ///   LIFT CONTROLLER   ///
+
+        if(game1Up) {
+            liftController.setMotorPower(liftSpeed);
+            telemetry.addData("Lift:", "Raising");
         }
-        else if(game2RT > 0.5) {
-            liftController.setLiftPower(-1);
+        else if(game1Down) {
+            liftController.setMotorPower(-liftSpeed);
+            telemetry.addData("Lift:", "Lowering");
         }
         else {
-            liftController.setLiftPower(0);
+            liftController.setMotorPower(0);
         }
 
-        if(game2Stick1Y > 0.5) {
-            liftController.inLowServos();
+        if(game1LB) {
+            liftController.setHighClawPower(0);
+            telemetry.addData("Lift:", "High Claw Clamping");
         }
-        else if(game2Stick1Y < -0.5) {
-            liftController.outLowServos();
+        else if(game1RB) {
+            liftController.setHighClawPower(1);
+            telemetry.addData("Lift:", "High Claw Releasing");
         }
         else {
-            liftController.stopLowServos();
+            liftController.setHighClawPower(0.5);
         }
 
-        if(game2Stick2Y > 0.5) {
-            liftController.inHighServos();
+        if(game1LT > 0.5) {
+            liftController.setLowClawPower(0);
+            telemetry.addData("Lift:", "Low Claw Clamping");
         }
-        else if(game2Stick2Y < -0.5) {
-            liftController.outHighServos();
+        else if(game1RT > 0.5) {
+            liftController.setLowClawPower(1);
+            telemetry.addData("Lift:", "Low Claw Releasing");
         }
         else {
-            liftController.stopHighServos();
-        }*/
+            liftController.setLowClawPower(0.5);
+        }
 
-        telemetry.addData("Trigger", game2LT);
+        ///   RElIC CONTROLLER   ///
+
+        if(game2RT > 0.5) {
+            relicController.setMotorPower(relicSpeed);
+            telemetry.addData("Relic:", "Extending");
+        }
+        else if(game2LT > 0.5) {
+            relicController.setMotorPower(-relicSpeed);
+            telemetry.addData("Relic:", "Retracting");
+        }
+        else {
+            relicController.setMotorPower(0);
+            telemetry.addData("Relic:", "Off");
+        }
+
+        if(game2RB) {
+            relicController.swingDown();
+            telemetry.addData("Relic:", "Swinging Down");
+        }
+        else if(game2LB) {
+            relicController.swingUp();
+            telemetry.addData("Relic:", "Swinging Up");
+        }
+        else {
+            relicController.swingStop();
+        }
+
+        if(game2A) {
+            relicController.setClawPower(1);
+            telemetry.addData("Relic:", "Claw Clamping");
+        }
+        else if(game2B) {
+            relicController.setClawPower(0);
+            telemetry.addData("Relic:", "Claw Releasing");
+        }
+        else {
+            relicController.setClawPower(0.5);
+        }
+
+        ///   OTHER   ///
 
         telemetry.update();
     }
@@ -167,5 +221,3 @@ public class TeleOp extends OpMode {
         return dScale;
     }
 }
-
-

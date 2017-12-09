@@ -25,8 +25,7 @@ public class ColorController {
     public void ledOn() {
         colorSensor.enableLed(true);
     }
-
-    public void ledOff() {
+  public void ledOff() {
         colorSensor.enableLed(false);
     }
 

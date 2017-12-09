@@ -12,51 +12,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class LiftController {
 
     private MotorController liftMotor;
-    private ServoController leftLowServo;
-    private ServoController rightLowServo;
-    private ServoController leftHighServo;
-    private ServoController rightHighServo;
+    private ServoController highServo;
+    private ServoController lowServo;
 
     public LiftController(HardwareMap hardwareMap) {
         liftMotor = new MotorController(hardwareMap.get(DcMotor.class, "liftMotor"));
-        leftHighServo = new ServoController(hardwareMap.servo.get("leftHighServo"));
-        rightHighServo = new ServoController(hardwareMap.servo.get("rightHighServo"));
-        leftLowServo = new ServoController(hardwareMap.servo.get("leftLowServo"));
-        rightLowServo = new ServoController(hardwareMap.servo.get("rightLowServo"));
+        highServo = new ServoController(hardwareMap.servo.get("highServo"));
+        lowServo = new ServoController(hardwareMap.servo.get("lowServo"));
+
+        liftMotor.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void setLiftPower(double power) {
-        liftMotor.setPower(power);
+    public void setMotorPower(double power) {
+        liftMotor.setPower(-power);
     }
 
-    public void inLowServos() {
-        leftLowServo.setPosition(1);
-        rightLowServo.setPosition(0);
+    public void setHighClawPower(double direction) {
+        highServo.setPosition(direction);
     }
 
-    public void outLowServos() {
-        leftLowServo.setPosition(0);
-        rightLowServo.setPosition(1);
+    public void setLowClawPower(double direction) {
+        lowServo.setPosition(direction);
     }
-
-    public void stopLowServos() {
-        leftLowServo.setPosition(0.5);
-        rightLowServo.setPosition(0.5);
-    }
-
-    public void inHighServos() {
-        leftHighServo.setPosition(0);
-        rightHighServo.setPosition(1);
-    }
-
-    public void outHighServos() {
-        leftHighServo.setPosition(1);
-        rightHighServo.setPosition(0);
-    }
-
-    public void stopHighServos() {
-        leftHighServo.setPosition(0.5);
-        rightHighServo.setPosition(0.5);
-    }
-
 }
