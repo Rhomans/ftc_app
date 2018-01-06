@@ -16,8 +16,8 @@ public class ColorController {
     Telemetry telemetry;
     ColorSensor colorSensor;
 
-    public ColorController(HardwareMap hardwareMap, Telemetry tel) {
-        colorSensor = hardwareMap.colorSensor.get("color");
+    public ColorController(ColorSensor sensor, Telemetry tel) {
+        colorSensor = sensor;
         colorSensor.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry = tel;
     }

@@ -27,25 +27,28 @@ public class TeleOp extends OpMode {
     private boolean toggleSlow = false;
     private boolean justToggledSlow = false;
 
+    private boolean justLiftedUp = false;
+    private boolean justLiftedDown = false;
+
     private float powerLeft;
     private float powerRight;
 
     @Override
     public void init() {
         driveController = new DriveController(hardwareMap, telemetry, null);
-        liftController = new LiftController(hardwareMap);
+        liftController = new LiftController(hardwareMap, telemetry, this);
         relicController = new RelicController(hardwareMap);
         //colorController = new ColorController(hardwareMap, telemetry);
 
         telemetry.addData("Slowmode:", "Off");
         telemetry.addData("Lift:", "Off");
         telemetry.addData("Relic:", "Off");
+
     }
 
     @Override
     public void loop() {
 
-        // Gamepad 1
         float game1Stick1Y = gamepad1.left_stick_y;
         float game1Stick1X = gamepad1.left_stick_x;
         float game1Stick2Y = gamepad1.right_stick_y;
@@ -83,10 +86,6 @@ public class TeleOp extends OpMode {
         boolean game2Right = gamepad2.dpad_right;
         boolean game2Left = gamepad2.dpad_left;
 
-        game1Stick1Y = Range.clip(game1Stick1Y, -1, 1);
-        game1Stick2Y = Range.clip(game1Stick2Y, -1, 1);
-        game2Stick1X = Range.clip(game1Stick1X, -1, 1);
-        game2Stick2Y = Range.clip(game1Stick2X, -1, 1);
 
         ///   DRIVE CONTROLLER   ///
 
@@ -119,16 +118,37 @@ public class TeleOp extends OpMode {
 
         ///   LIFT CONTROLLER   ///
 
-        if(game1Up) {
-            liftController.setMotorPower(liftSpeed);
-            telemetry.addData("Lift:", "Raising");
-        }
-        else if(game1Down) {
-            liftController.setMotorPower(-liftSpeed);
-            telemetry.addData("Lift:", "Lowering");
+
+
+        if(game1X) {
+            liftController.liftMotor.setPower(1);
         }
         else {
-            liftController.setMotorPower(0);
+            liftController.liftMotor.setPower(0);
+        }
+
+        if(game1Up) {
+            if(!justLiftedUp) {
+                liftController.liftUp();
+                justLiftedUp = true;
+            }
+        }
+        if(!game1Up) {
+            if(justLiftedUp) {
+                justLiftedUp = false;
+            }
+        }
+
+        if(game1Down) {
+            if(!justLiftedDown) {
+                liftController.liftDown();
+                justLiftedDown = true;
+            }
+        }
+        if(!game1Down) {
+            if(justLiftedDown) {
+                justLiftedDown = false;
+            }
         }
 
         if(game1LB) {
