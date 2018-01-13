@@ -16,16 +16,17 @@ public class ColorController {
     Telemetry telemetry;
     ColorSensor colorSensor;
 
-    public ColorController(ColorSensor sensor, Telemetry tel) {
+    public ColorController(ColorSensor sensor, I2cAddr address, Telemetry tel) {
         colorSensor = sensor;
-        colorSensor.setI2cAddress(I2cAddr.create8bit(0x3c));
+        colorSensor.setI2cAddress(address);
         telemetry = tel;
     }
 
     public void ledOn() {
         colorSensor.enableLed(true);
     }
-  public void ledOff() {
+
+    public void ledOff() {
         colorSensor.enableLed(false);
     }
 

@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.util.Range;
  * This class manages the teleop driver controlled period.
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
-public class TeleOp extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp_MANUAL", group = "TeleOp")
+public class Teleop_MANUAL extends OpMode {
 
     ///   Hyperparameters   ///
 
@@ -40,6 +40,7 @@ public class TeleOp extends OpMode {
         liftController = new LiftController(hardwareMap, telemetry, this);
         relicController = new RelicController(hardwareMap);
         jewelController = new JewelController(hardwareMap, telemetry);
+
         //colorController = new ColorController(hardwareMap, telemetry);
 
         telemetry.addData("Slowmode:", "Off");
@@ -88,6 +89,7 @@ public class TeleOp extends OpMode {
         boolean game2Right = gamepad2.dpad_right;
         boolean game2Left = gamepad2.dpad_left;
 
+
         if(game2X) {
             jewelController.leftDown();
             jewelController.rightDown();
@@ -132,27 +134,13 @@ public class TeleOp extends OpMode {
         telemetry.addData("liftPos:", liftController.getLiftPosition());
 
         if(game1Up) {
-            if(!justLiftedUp) {
-                liftController.liftUp();
-                justLiftedUp = true;
-            }
+            liftController.liftMotor.setPower(1);
         }
-        if(!game1Up) {
-            if(justLiftedUp) {
-                justLiftedUp = false;
-            }
+        else if(game1Down) {
+            liftController.liftMotor.setPower(-1);
         }
-
-        if(game1Down) {
-            if(!justLiftedDown) {
-                liftController.liftDown();
-                justLiftedDown = true;
-            }
-        }
-        if(!game1Down) {
-            if(justLiftedDown) {
-                justLiftedDown = false;
-            }
+        else {
+            liftController.liftMotor.setPower(0);
         }
 
         if(game1LB) {

@@ -55,27 +55,68 @@ public class BasicAuto extends LinearOpMode {
         runtimeAuto.reset();
 
         initialize();
+
+        String ballColor = "";
+
+        ///   JEWEL   ///
+
+        if(color.equals("blue")) {
+            jewelController.leftDown();
+            Thread.sleep(1000);
+            ballColor = jewelController.leftColor.getColor();
+            knockJewel(ballColor);
+        }
+        if(color.equals("red")) {
+            jewelController.rightDown();
+            Thread.sleep(1000);
+            ballColor = jewelController.rightColor.getColor();
+            knockJewel(ballColor);
+        }
+
+        telemetry.addData("color:", ballColor);
+        telemetry.update();
+
+        jewelController.leftColor.ledOff();
+        jewelController.rightColor.ledOff();
+
+
+
         //driveController.driveStraight(100, 0.5, "Straight 1");
         //driveController.turnDoubleWheel("right", 90, 0.5, "Right 1");
-
-        jewelController.rightUp();
 
         /*int pattern = visionController.identifyVisionPattern(telemetry);
         telemetry.addData("Pattern", pattern);
         telemetry.update();
 
-        driveController.driveStraight(60, normalPower, "Forward 1");
+        if(side == 1) {
+            driveController.driveStraight(60, normalPower, "Forward 1");
+            driveController.driveStraight(distances1[pattern], normalPower, "Forward 2");
 
-        driveController.driveStraight(distances1[pattern], normalPower, "Forward 2");
+            if (color.equals("red")) {
+                driveController.turnDoubleWheel("right", 90, turnPower, "Turn 1");
+            }
 
-        if(color.equals("red")) {
-            driveController.turnDoubleWheel("right", 90, turnPower, "Turn 1");
-        }
+            if (color.equals("blue")) {
+                driveController.turnDoubleWheel("left", 90, turnPower, "Turn 1");
+            }
 
-        if(color.equals("blue")) {
-            driveController.turnDoubleWheel("left", 90, turnPower, "Turn 1");
-        }
-
-        driveController.driveStraight(15, slowPower, "Forward 3");*/
+            driveController.driveStraight(15, slowPower, "Forward 3");
+        }*/
     }
+
+    public void knockJewel(String ballColor) throws InterruptedException {
+        if(ballColor.equals("blue")) {
+            driveController.turnDoubleWheel("left", 20, 0.4, "");
+            jewelController.leftUp();
+            driveController.turnDoubleWheel("right", 20, 0.4, "");
+        }
+        if(ballColor.equals("red")) {
+            driveController.turnDoubleWheel("right", 20, 0.4, "");
+            jewelController.rightUp();
+            driveController.turnDoubleWheel("left", 20, 0.4, "");
+        }
+    }
+
 }
+
+//pseudocode here

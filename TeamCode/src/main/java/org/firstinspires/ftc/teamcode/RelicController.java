@@ -11,16 +11,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class RelicController {
 
-    private MotorController leftMotor;
-    private  MotorController rightMotor;
+    private MotorController motor;
 
     private ServoController leftServo;
     private ServoController rightServo;
     private ServoController clawServo;
 
     public RelicController(HardwareMap hardwareMap) {
-        leftMotor = new MotorController(hardwareMap.get(DcMotor.class, "relicLeftMotor"));
-        rightMotor = new MotorController(hardwareMap.get(DcMotor.class, "relicRightMotor"));
+        motor = new MotorController(hardwareMap.get(DcMotor.class, "relicMotor"));
 
         leftServo = new ServoController(hardwareMap.servo.get("relicLeftServo"));
         rightServo = new ServoController(hardwareMap.servo.get("relicRightServo"));
@@ -28,8 +26,7 @@ public class RelicController {
     }
 
     public void setMotorPower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+        motor.setPower(power);
     }
 
     public void swingUp() {

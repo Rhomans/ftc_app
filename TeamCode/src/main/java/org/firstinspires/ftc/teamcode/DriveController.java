@@ -44,7 +44,7 @@ public class DriveController {
 
 
         driveRightFront.motor.setDirection(DcMotor.Direction.REVERSE);
-        driveRightBack.motor.setDirection(DcMotor.Direction.REVERSE);
+        //driveRightBack.motor.setDirection(DcMotor.Direction.REVERSE);
 
         driveRightBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         driveLeftBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

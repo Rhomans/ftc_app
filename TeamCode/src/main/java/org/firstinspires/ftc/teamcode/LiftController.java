@@ -12,7 +12,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * Created by rishabhbector on 11/1/17.
+ *
+ *
  */
+
+
+//position 2: 1154
 
 public class LiftController {
 
@@ -23,7 +28,7 @@ public class LiftController {
     Telemetry telemetry;
     OpMode opMode;
 
-    public int[] positions = {0, 1400, 2180, 3120};
+    public int[] positions = {0, 1430, 2000, 3120};
     public int currentPosition = 0;
 
     public LiftController(HardwareMap hardwareMap, Telemetry tel, OpMode op) {
