@@ -14,7 +14,7 @@ public class Teleop_MANUAL extends OpMode {
 
     ///   Hyperparameters   ///
 
-    private double slowModeScalar = 0.15;
+    private double slowModeScalar = 0.25;
     private double relicSpeed = 1;
     private double liftSpeed = 1;
 
@@ -90,13 +90,16 @@ public class Teleop_MANUAL extends OpMode {
         boolean game2Left = gamepad2.dpad_left;
 
 
-        if(game2X) {
+        if(game2Stick1X < -0.5) {
             jewelController.leftDown();
+        }
+        if(game2Stick1X > 0.5) {
+            jewelController.leftUp();
+        }
+        if(game2Stick2X > 0.5) {
             jewelController.rightDown();
         }
-
-        if(game2Y) {
-            jewelController.leftUp();
+        if(game2Stick2X < -0.5) {
             jewelController.rightUp();
         }
 

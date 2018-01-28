@@ -23,6 +23,10 @@ public class RelicController {
         leftServo = new ServoController(hardwareMap.servo.get("relicLeftServo"));
         rightServo = new ServoController(hardwareMap.servo.get("relicRightServo"));
         clawServo = new ServoController(hardwareMap.servo.get("relicClawServo"));
+
+        //leftServo.setPosition(0.5);
+        //rightServo.setPosition(0.5);
+        //clawServo.setPosition(0.5);
     }
 
     public void setMotorPower(double power) {

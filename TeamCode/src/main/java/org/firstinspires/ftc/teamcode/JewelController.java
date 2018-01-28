@@ -23,6 +23,10 @@ public class JewelController {
     public JewelController(HardwareMap hardwaremap, Telemetry tel) {
         leftServo = new ServoController(hardwaremap.servo.get("jewelLeft"));
         rightServo = new ServoController(hardwaremap.servo.get("jewelRight"));
+
+        //leftUp();
+        //rightUp();
+
         leftColor = new ColorController(hardwaremap.colorSensor.get("jewelLeftSensor"), I2cAddr.create8bit(0x4c), tel);
         rightColor = new ColorController(hardwaremap.colorSensor.get("jewelRightSensor"), I2cAddr.create8bit(0x3c), tel);
         leftColor.ledOn();
@@ -36,6 +40,11 @@ public class JewelController {
 
     public void leftUp() {
         rightServo.setPosition(0.5);
+        leftServo.setPosition(0);
+    }
+
+    public void bothUp() {
+        rightServo.setPosition(1);
         leftServo.setPosition(0);
     }
 

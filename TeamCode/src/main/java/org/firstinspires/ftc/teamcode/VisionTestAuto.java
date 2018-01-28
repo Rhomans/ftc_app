@@ -15,7 +15,7 @@ public class VisionTestAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        VisionController vision = new VisionController(hardwareMap,false,telemetry);
+        VisionController vision = new VisionController(hardwareMap,true,telemetry);
         telemetry.addData("Status", "Waiting for start");
         telemetry.update();
         waitForStart();

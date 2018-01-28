@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
@@ -18,6 +20,8 @@ public class DriveController {
     private double robotWidthCM = 38.0;
 
     private double cmPerTick = 289.5 / 5200.0;
+
+    private double safeArea = 50;
 
     ///////////////////////////
 
@@ -44,7 +48,7 @@ public class DriveController {
 
 
         driveRightFront.motor.setDirection(DcMotor.Direction.REVERSE);
-        //driveRightBack.motor.setDirection(DcMotor.Direction.REVERSE);
+        driveRightBack.motor.setDirection(DcMotor.Direction.REVERSE);
 
         driveRightBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         driveLeftBack.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -175,6 +179,13 @@ public class DriveController {
             telemetry.addData("Left Busy", driveLeftBack.motor.isBusy());
             telemetry.addData("Right Busy", driveRightBack.motor.isBusy());
             telemetry.update();
+
+            if((currentTicks[0] < targetLeft + safeArea) && (currentTicks[0] > targetLeft - safeArea)) {
+                if((currentTicks[1] < targetRight + safeArea) && (currentTicks[1] > targetRight - safeArea)) {
+                    setPower(0);
+                    return;
+                }
+            }
         }
 
         setPower(0);
@@ -182,7 +193,7 @@ public class DriveController {
 
     }
 
-    public void driveStraight(double distanceCM, double power, String moveName) throws InterruptedException {
+    public void driveStraight(String dir, double distanceCM, double power, String moveName) throws InterruptedException {
         telemetry.addData("Stage:", moveName);
         telemetry.update();
 
@@ -190,8 +201,18 @@ public class DriveController {
 
         double distanceTicks = cmToTicks(distanceCM);
         //double distanceTicks = distanceCM;
-        double targetLeft = (driveLeftBack.motor.getCurrentPosition() + distanceTicks);
-        double targetRight = (driveRightBack.motor.getCurrentPosition() + distanceTicks);
+
+        double targetLeft = 0;
+        double targetRight = 0;
+
+        if(dir.equals("forward")) {
+            targetLeft = (driveLeftBack.motor.getCurrentPosition() + distanceTicks);
+            targetRight = (driveRightBack.motor.getCurrentPosition() + distanceTicks);
+        }
+        if(dir.equals("backward")) {
+            targetLeft = (driveLeftBack.motor.getCurrentPosition() - distanceTicks);
+            targetRight = (driveRightBack.motor.getCurrentPosition() - distanceTicks);
+        }
 
         driveLeftBack.motor.setTargetPosition((int)targetLeft);
         driveLeftFront.motor.setTargetPosition((int)targetLeft);
@@ -214,6 +235,12 @@ public class DriveController {
             telemetry.addData("Left Busy", driveLeftBack.motor.isBusy());
             telemetry.addData("Right Busy", driveRightBack.motor.isBusy());
             telemetry.update();
+
+            if((ticks[0] < targetLeft + safeArea) && (ticks[0] > targetLeft - safeArea)) {
+                if((ticks[1] < targetRight + safeArea) && (ticks[1] > targetRight - safeArea)) {
+                    break;
+                }
+            }
         }
 
         setPower(0);
@@ -222,5 +249,31 @@ public class DriveController {
         driveLeftFront.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveRightBack.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveRightFront.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void driveStraightRange(UltrasonicController ultrasonicController, String direction, double distanceCM, double power, Telemetry telemetry) throws InterruptedException {
+        double currentDistance = ultrasonicController.getRange(direction);
+        telemetry.addData("CurrentD:", currentDistance);
+        telemetry.update();
+        if(direction.equals("front")) {
+            if (currentDistance > distanceCM) {
+                double difference = currentDistance - distanceCM;
+                driveStraight("forward", difference, power, "");
+            }
+            if (distanceCM > currentDistance) {
+                double difference = distanceCM - currentDistance;
+                driveStraight("backward", difference, power, "");
+            }
+        }
+        if(direction.equals("back")) {
+            if (currentDistance > distanceCM) {
+                double difference = currentDistance - distanceCM;
+                driveStraight("backward", difference, power, "");
+            }
+            if (distanceCM > currentDistance) {
+                double difference = distanceCM - currentDistance;
+                driveStraight("forward", difference, power, "");
+            }
+        }
     }
 }

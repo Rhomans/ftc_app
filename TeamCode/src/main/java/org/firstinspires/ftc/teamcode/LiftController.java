@@ -36,6 +36,9 @@ public class LiftController {
         highServo = new ServoController(hardwareMap.servo.get("highServo"));
         lowServo = new ServoController(hardwareMap.servo.get("lowServo"));
 
+        //highServo.setPosition(0.5);
+        //lowServo.setPosition(0.5);
+
         telemetry = tel;
         opMode = op;
 
